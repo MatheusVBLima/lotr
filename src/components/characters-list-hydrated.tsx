@@ -1,0 +1,275 @@
+'use client'
+
+import React from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryState } from "nuqs"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import Link from "next/link"
+import { Search, Filter } from "lucide-react"
+import type { Character, ApiResponse } from "@/lib/types"
+
+interface CharactersListHydratedProps {
+  initialData: ApiResponse<Character>
+}
+
+export function CharactersListHydrated({ initialData }: CharactersListHydratedProps) {
+  const queryClient = useQueryClient()
+  const [search, setSearch] = useQueryState('search')
+  const [race, setRace] = useQueryState('race')
+  const [gender, setGender] = useQueryState('gender')
+  const [page, setPage] = useQueryState('page', { parse: parseInt })
+  
+  const limit = 12
+
+  // Hydrate the initial data
+  React.useEffect(() => {
+    queryClient.setQueryData(['characters', { page: 1, limit }], initialData)
+  }, [initialData, queryClient, limit])
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['characters', { search, race, gender, page: page || 1, limit }],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        limit: limit.toString(),
+        page: (page || 1).toString(),
+        ...(search && { name: `/${search}/i` }),
+        ...(race && { race }),
+        ...(gender && gender !== 'all' && { gender }),
+      })
+      
+      const response = await fetch(`/api/characters?${params}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch characters')
+      }
+      return response.json()
+    },
+    initialData: !search && !race && !gender && (page || 1) === 1 ? initialData : undefined,
+    retry: 1,
+  })
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value || null)
+    setPage(1)
+  }
+
+  const handleRaceChange = (value: string) => {
+    setRace(value === 'all' ? null : value)
+    setPage(1)
+  }
+
+  const handleGenderChange = (value: string) => {
+    setGender(value === 'all' ? null : value)
+    setPage(1)
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <p className="text-muted-foreground mb-4">
+            Failed to load characters. Please try again later.
+          </p>
+          <details className="text-sm">
+            <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+              Error Details
+            </summary>
+            <pre className="mt-2 text-xs bg-muted p-2 rounded overflow-auto">
+              {error instanceof Error ? error.message : String(error)}
+            </pre>
+          </details>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter size={20} />
+            Search & Filter Characters
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
+              <Input
+                placeholder="Search by name..."
+                value={search || ''}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
+            <Select value={race || 'all'} onValueChange={handleRaceChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by race" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Races</SelectItem>
+                <SelectItem value="Hobbit">Hobbit</SelectItem>
+                <SelectItem value="Human">Human</SelectItem>
+                <SelectItem value="Elf">Elf</SelectItem>
+                <SelectItem value="Dwarf">Dwarf</SelectItem>
+                <SelectItem value="Wizard">Wizard</SelectItem>
+                <SelectItem value="Orc">Orc</SelectItem>
+                <SelectItem value="Uruk-hai">Uruk-hai</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={gender || 'all'} onValueChange={handleGenderChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Genders</SelectItem>
+                <SelectItem value="Male">Male</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Results */}
+      {isLoading ? (
+        <CharactersListSkeleton />
+      ) : (
+        <>
+          {data && (
+            <div className="text-center text-muted-foreground">
+              Found {data.total} characters
+              {(search || race || gender) && ' matching your filters'}
+            </div>
+          )}
+          
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {data?.docs.map((character: Character) => (
+              <Card key={character._id} className="hover:shadow-lg transition-shadow">
+                <CardHeader className="text-center">
+                  <Avatar className="w-16 h-16 mx-auto mb-2">
+                    <AvatarFallback className="text-lg font-semibold">
+                      {character.name.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <CardTitle className="text-lg">{character.name}</CardTitle>
+                  {character.race && (
+                    <CardDescription>{character.race}</CardDescription>
+                  )}
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex gap-2 flex-wrap justify-center">
+                    {character.race && (
+                      <Badge variant="secondary">{character.race}</Badge>
+                    )}
+                    {character.gender && character.gender !== 'NaN' && (
+                      <Badge variant="outline">{character.gender}</Badge>
+                    )}
+                  </div>
+                  
+                  {character.realm && (
+                    <div className="text-sm text-center text-muted-foreground">
+                      <strong>Realm:</strong> {character.realm}
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 justify-center">
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={`/characters/${character._id}`}>
+                        View Details
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={`/characters/${character._id}/quotes`}>
+                        Quotes
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {data && data.pages && data.pages > 1 && (
+            <div className="flex justify-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const newPage = Math.max(1, (page || 1) - 1)
+                  setPage(newPage)
+                }}
+                disabled={(page || 1) <= 1}
+              >
+                Previous
+              </Button>
+              
+              <div className="flex items-center gap-2">
+                {Array.from({ length: Math.min(5, data.pages || 0) }, (_, i) => {
+                  const pageNum = Math.max(1, Math.min((data.pages || 0) - 4, (page || 1) - 2)) + i
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={pageNum === (page || 1) ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setPage(pageNum)}
+                    >
+                      {pageNum}
+                    </Button>
+                  )
+                })}
+              </div>
+              
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const newPage = Math.min(data.pages || 1, (page || 1) + 1)
+                  setPage(newPage)
+                }}
+                disabled={(page || 1) >= (data.pages || 1)}
+              >
+                Next
+              </Button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
+function CharactersListSkeleton() {
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+        <Card key={i}>
+          <CardHeader className="text-center">
+            <Skeleton className="w-16 h-16 rounded-full mx-auto mb-2" />
+            <Skeleton className="h-5 w-3/4 mx-auto" />
+            <Skeleton className="h-4 w-1/2 mx-auto" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex gap-2 justify-center">
+              <Skeleton className="h-5 w-16" />
+              <Skeleton className="h-5 w-12" />
+            </div>
+            <Skeleton className="h-4 w-full" />
+            <div className="flex gap-2 justify-center">
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-16" />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+}
