@@ -2,6 +2,8 @@ import { ModernHeader } from "@/components/modern-header"
 import { QuotesListHydrated } from "@/components/quotes-list-hydrated"
 import { apiClient } from "@/lib/api"
 import { enrichQuotes } from "@/lib/quote-enricher"
+import { Suspense } from "react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 // Use dynamic rendering only when needed
 export const dynamic = 'auto'
@@ -25,7 +27,9 @@ export default async function QuotesPage() {
               Content will be available once API is properly configured.
             </p>
           </div>
-          <QuotesListHydrated initialData={{ docs: [], total: 0, limit: 20, page: 1, pages: 0 }} />
+          <Suspense fallback={<QuotesListSkeleton />}>
+            <QuotesListHydrated initialData={{ docs: [], total: 0, limit: 20, page: 1, pages: 0 }} />
+          </Suspense>
         </main>
       </div>
     )
@@ -52,7 +56,9 @@ export default async function QuotesPage() {
             </p>
           </div>
 
-          <QuotesListHydrated initialData={initialQuotes} />
+          <Suspense fallback={<QuotesListSkeleton />}>
+            <QuotesListHydrated initialData={initialQuotes} />
+          </Suspense>
         </main>
       </div>
     )
@@ -71,9 +77,38 @@ export default async function QuotesPage() {
               Error loading quotes. Please try again later.
             </p>
           </div>
-          <QuotesListHydrated initialData={{ docs: [], total: 0, limit: 20, page: 1, pages: 0 }} />
+          <Suspense fallback={<QuotesListSkeleton />}>
+            <QuotesListHydrated initialData={{ docs: [], total: 0, limit: 20, page: 1, pages: 0 }} />
+          </Suspense>
         </main>
       </div>
     )
   }
+}
+
+function QuotesListSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Search Skeleton */}
+      <div className="border rounded-lg p-6">
+        <Skeleton className="h-6 w-32 mb-2" />
+        <Skeleton className="h-4 w-64 mb-4" />
+        <Skeleton className="h-10 w-full" />
+      </div>
+      
+      {/* Quotes Skeleton */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="border rounded-lg p-6">
+            <Skeleton className="h-4 w-full mb-2" />
+            <Skeleton className="h-4 w-3/4 mb-4" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-8 rounded-full" />
+              <Skeleton className="h-4 w-24" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }
