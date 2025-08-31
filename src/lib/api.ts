@@ -15,7 +15,7 @@ const API_BASE_URL = process.env.THE_ONE_API_BASE_URL || 'https://the-one-api.de
 const API_TOKEN = process.env.THE_ONE_API_TOKEN
 
 class ApiClient {
-  private async fetchWithAuth(endpoint: string, params?: QueryParams): Promise<Record<string, unknown>> {
+  private async fetchWithAuth<T = any>(endpoint: string, params?: QueryParams): Promise<T> {
     const url = new URL(`${API_BASE_URL}${endpoint}`)
     
     if (params) {
@@ -55,31 +55,31 @@ class ApiClient {
 
   // Books (no auth required)
   async getBooks(params?: QueryParams): Promise<ApiResponse<Book>> {
-    return this.fetchWithAuth('/book', params)
+    return this.fetchWithAuth<ApiResponse<Book>>('/book', params)
   }
 
   async getBook(id: string): Promise<Book> {
-    const response = await this.fetchWithAuth(`/book/${id}`)
+    const response = await this.fetchWithAuth<ApiResponse<Book>>(`/book/${id}`)
     return response.docs[0]
   }
 
   async getBookChapters(bookId: string, params?: QueryParams): Promise<ApiResponse<Chapter>> {
-    return this.fetchWithAuth(`/book/${bookId}/chapter`, params)
+    return this.fetchWithAuth<ApiResponse<Chapter>>(`/book/${bookId}/chapter`, params)
   }
 
   // Movies (auth required)
   async getMovies(filters?: MovieFilters, params?: QueryParams): Promise<ApiResponse<Movie>> {
     const queryParams = { ...params, ...filters }
-    return this.fetchWithAuth('/movie', queryParams)
+    return this.fetchWithAuth<ApiResponse<Movie>>('/movie', queryParams)
   }
 
   async getMovie(id: string): Promise<Movie> {
-    const response = await this.fetchWithAuth(`/movie/${id}`)
+    const response = await this.fetchWithAuth<ApiResponse<Movie>>(`/movie/${id}`)
     return response.docs[0]
   }
 
   async getMovieQuotes(movieId: string, params?: QueryParams): Promise<ApiResponse<Quote>> {
-    return this.fetchWithAuth(`/movie/${movieId}/quote`, params)
+    return this.fetchWithAuth<ApiResponse<Quote>>(`/movie/${movieId}/quote`, params)
   }
 
   // Characters (auth required)
@@ -95,36 +95,36 @@ class ApiClient {
       })
     }
     
-    return this.fetchWithAuth('/character', queryParams)
+    return this.fetchWithAuth<ApiResponse<Character>>('/character', queryParams)
   }
 
   async getCharacter(id: string): Promise<Character> {
-    const response = await this.fetchWithAuth(`/character/${id}`)
+    const response = await this.fetchWithAuth<ApiResponse<Character>>(`/character/${id}`)
     return response.docs[0]
   }
 
   async getCharacterQuotes(characterId: string, params?: QueryParams): Promise<ApiResponse<Quote>> {
-    return this.fetchWithAuth(`/character/${characterId}/quote`, params)
+    return this.fetchWithAuth<ApiResponse<Quote>>(`/character/${characterId}/quote`, params)
   }
 
   // Quotes (auth required)
   async getQuotes(filters?: QuoteFilters, params?: QueryParams): Promise<ApiResponse<Quote>> {
     const queryParams = { ...params, ...filters }
-    return this.fetchWithAuth('/quote', queryParams)
+    return this.fetchWithAuth<ApiResponse<Quote>>('/quote', queryParams)
   }
 
   async getQuote(id: string): Promise<Quote> {
-    const response = await this.fetchWithAuth(`/quote/${id}`)
+    const response = await this.fetchWithAuth<ApiResponse<Quote>>(`/quote/${id}`)
     return response.docs[0]
   }
 
   // Chapters (auth required)
   async getChapters(params?: QueryParams): Promise<ApiResponse<Chapter>> {
-    return this.fetchWithAuth('/chapter', params)
+    return this.fetchWithAuth<ApiResponse<Chapter>>('/chapter', params)
   }
 
   async getChapter(id: string): Promise<Chapter> {
-    const response = await this.fetchWithAuth(`/chapter/${id}`)
+    const response = await this.fetchWithAuth<ApiResponse<Chapter>>(`/chapter/${id}`)
     return response.docs[0]
   }
 }
