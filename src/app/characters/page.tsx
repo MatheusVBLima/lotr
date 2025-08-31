@@ -2,8 +2,8 @@ import { ModernHeader } from "@/components/modern-header"
 import { CharactersListHydrated } from "@/components/characters-list-hydrated"
 import { apiClient } from "@/lib/api"
 
-// Force dynamic rendering to avoid prerendering issues with API tokens
-export const dynamic = 'force-dynamic'
+// Use ISR for better performance
+export const revalidate = 3600 // Revalidate every hour
 
 // Server Component - fetches data directly with token
 export default async function CharactersPage() {

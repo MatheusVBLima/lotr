@@ -2,8 +2,8 @@ import { apiClient } from "@/lib/api"
 import { ModernHeader } from "@/components/modern-header"
 import { MoviesListCached } from "@/components/movies-list-cached"
 
-// Force dynamic rendering to avoid prerendering issues with API tokens
-export const dynamic = 'force-dynamic'
+// Use ISR for better performance  
+export const revalidate = 3600 // Revalidate every hour
 
 export default async function MoviesPage() {
   // Check if API token is available before making requests
@@ -38,6 +38,7 @@ export default async function MoviesPage() {
   } catch (error) {
     console.error('Server: Failed to fetch movies:', error)
     initialMovies = { docs: [], total: 0, limit: 20, page: 1, pages: 0 }
+  }
 
   return (
     <div className="min-h-screen bg-background">

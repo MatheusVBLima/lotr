@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ModernHeader } from "@/components/modern-header"
 import { BooksListCached } from "@/components/books-list-cached"
 
-// Force dynamic rendering for consistency
-export const dynamic = 'force-dynamic'
+// Books don't need auth, can be statically generated
+export const revalidate = false // Static generation
 
 export default async function BooksPage() {
   try {

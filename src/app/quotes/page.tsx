@@ -3,8 +3,9 @@ import { QuotesListHydrated } from "@/components/quotes-list-hydrated"
 import { apiClient } from "@/lib/api"
 import { enrichQuotes } from "@/lib/quote-enricher"
 
-// Force dynamic rendering to avoid prerendering issues with API tokens
-export const dynamic = 'force-dynamic'
+// Use dynamic rendering only when needed
+export const dynamic = 'auto'
+export const revalidate = 3600 // Revalidate every hour
 
 export default async function QuotesPage() {
   // Check if API token is available before making requests
