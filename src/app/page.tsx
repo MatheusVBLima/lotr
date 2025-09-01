@@ -6,8 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ModernHeader } from "@/components/modern-header"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { headers } from 'next/headers'
+import { translateApiContent } from '@/lib/api-translations'
 
-async function BooksOverview() {
+async function BooksOverview({ locale }: { locale: string }) {
   try {
     const booksResponse = await apiClient.getBooks()
     const books = booksResponse.docs
@@ -27,12 +29,12 @@ async function BooksOverview() {
               <div className="flex gap-2">
                 <Button asChild variant="outline" size="sm">
                   <Link href={`/books/${book._id}`}>
-                    View Details
+                    {translateApiContent('viewDetails', locale)}
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="sm">
                   <Link href={`/books/${book._id}/chapters`}>
-                    Chapters
+                    {translateApiContent('viewChapters', locale)}
                   </Link>
                 </Button>
               </div>
@@ -76,7 +78,32 @@ function BooksOverviewSkeleton() {
   )
 }
 
-export default function Home() {
+export default async function Home() {
+  // Get locale from middleware header
+  const headersList = await headers()
+  const locale = headersList.get('x-locale') || 'en'
+  
+  console.log(`🏠 [HOME PAGE] Rendering home page with locale: ${locale}`);
+  
+  // Load messages manually to avoid setRequestLocale issues
+  let messages = {};
+  try {
+    messages = (await import(`../../messages/${locale}.json`)).default;
+    console.log(`🌐 [HOME PAGE] Messages loaded for locale: ${locale}`);
+  } catch (error) {
+    console.log(`⚠️ [HOME PAGE] Failed to load messages for ${locale}, using fallback`);
+    messages = (await import(`../../messages/en.json`)).default;
+  }
+  
+  // Simple translation function
+  const t = (key: string) => {
+    const keys = key.split('.');
+    let value = messages;
+    for (const k of keys) {
+      value = value?.[k];
+    }
+    return value || key;
+  };
   return (
     <div className="min-h-screen bg-background">
       <ModernHeader />
@@ -85,18 +112,17 @@ export default function Home() {
       <section className="py-12 px-4">
         <div className="container mx-auto text-center space-y-6">
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
-            Welcome to Middle-earth
+            {t('home.title')}
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
-            Discover the rich world of J.R.R. Tolkien through comprehensive data 
-            about books, movies, characters, and memorable quotes from The Lord of the Rings universe.
+            {t('home.subtitle')}
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button asChild size="lg">
-              <Link href="/movies">Explore Movies</Link>
+              <Link href="/movies">{t('home.moviesCard.title')}</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/characters">Meet Characters</Link>
+              <Link href="/characters">{t('home.charactersCard.title')}</Link>
             </Button>
           </div>
         </div>
@@ -113,7 +139,7 @@ export default function Home() {
           </div>
           
           <Suspense fallback={<BooksOverviewSkeleton />}>
-            <BooksOverview />
+            <BooksOverview locale={locale} />
           </Suspense>
         </div>
       </section>

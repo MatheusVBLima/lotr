@@ -6,17 +6,24 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Crown } from "lucide-react"
 import { ThemeSwitcher } from "@/components/theme-switcher"
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { useTranslations, useLocale } from 'next-intl'
 
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "Books", href: "/books" },
-  { name: "Movies", href: "/movies" },
-  { name: "Characters", href: "/characters" },
-  { name: "Quotes", href: "/quotes" },
-]
 
 export function ModernHeader() {
   const pathname = usePathname()
+  const locale = useLocale()
+  const t = useTranslations('navigation')
+  
+  console.log(`🔗 [HEADER] Current pathname: ${pathname}, locale: ${locale}`)
+
+  const navigation = [
+    { name: t('home'), href: '/' },
+    { name: t('books'), href: '/books' },
+    { name: t('movies'), href: '/movies' },
+    { name: t('characters'), href: '/characters' },
+    { name: t('quotes'), href: '/quotes' },
+  ]
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -75,6 +82,9 @@ export function ModernHeader() {
                 </select>
               </div>
             </nav>
+            
+            {/* Language Switcher */}
+            <LanguageSwitcher />
             
             {/* Theme Switcher */}
             <ThemeSwitcher />

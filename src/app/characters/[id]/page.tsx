@@ -9,12 +9,14 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import Link from "next/link"
 import { ArrowLeft, ExternalLink } from "lucide-react"
+import { headers } from 'next/headers'
+import { translateApiContent } from "@/lib/api-translations"
 
 interface CharacterPageProps {
   params: Promise<{ id: string }>
 }
 
-async function CharacterDetails({ characterId }: { characterId: string }) {
+async function CharacterDetails({ characterId, locale = 'en' }: { characterId: string, locale?: string }) {
   try {
     const character = await apiClient.getCharacter(characterId)
     
@@ -40,12 +42,12 @@ async function CharacterDetails({ characterId }: { characterId: string }) {
             <div className="flex gap-2 flex-wrap justify-center">
               {character.race && (
                 <Badge variant="secondary" className="text-base px-3 py-1">
-                  {character.race}
+                  {translateApiContent(character.race, locale)}
                 </Badge>
               )}
               {character.gender && character.gender !== 'NaN' && (
                 <Badge variant="outline" className="text-base px-3 py-1">
-                  {character.gender}
+                  {translateApiContent(character.gender, locale)}
                 </Badge>
               )}
             </div>
@@ -54,7 +56,7 @@ async function CharacterDetails({ characterId }: { characterId: string }) {
               {character.realm && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Realm</CardTitle>
+                    <CardTitle className="text-lg">{translateApiContent('realm', locale)}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-xl">{character.realm}</p>
@@ -65,7 +67,7 @@ async function CharacterDetails({ characterId }: { characterId: string }) {
               {character.birth && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Birth</CardTitle>
+                    <CardTitle className="text-lg">{translateApiContent('birth', locale)}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-xl">{character.birth}</p>
@@ -76,7 +78,7 @@ async function CharacterDetails({ characterId }: { characterId: string }) {
               {character.spouse && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Spouse</CardTitle>
+                    <CardTitle className="text-lg">{translateApiContent('spouse', locale)}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-xl">{character.spouse}</p>
@@ -87,7 +89,7 @@ async function CharacterDetails({ characterId }: { characterId: string }) {
               {character.death && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Death</CardTitle>
+                    <CardTitle className="text-lg">{translateApiContent('death', locale)}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-xl">{character.death}</p>
@@ -98,7 +100,7 @@ async function CharacterDetails({ characterId }: { characterId: string }) {
               {character.hair && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Hair Color</CardTitle>
+                    <CardTitle className="text-lg">{translateApiContent('hairColor', locale)}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-xl">{character.hair}</p>
@@ -109,7 +111,7 @@ async function CharacterDetails({ characterId }: { characterId: string }) {
               {character.height && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Height</CardTitle>
+                    <CardTitle className="text-lg">{translateApiContent('height', locale)}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-xl">{character.height}</p>
@@ -121,7 +123,7 @@ async function CharacterDetails({ characterId }: { characterId: string }) {
             <div className="flex gap-4 justify-center flex-wrap">
               <Button asChild>
                 <Link href={`/characters/${character._id}/quotes`}>
-                  View Quotes by {character.name}
+                  {translateApiContent('viewQuotesBy', locale)} {character.name}
                 </Link>
               </Button>
               
@@ -134,7 +136,7 @@ async function CharacterDetails({ characterId }: { characterId: string }) {
                     className="flex items-center gap-2"
                   >
                     <ExternalLink size={16} />
-                    Wiki Page
+                    {translateApiContent('wikiPage', locale)}
                   </a>
                 </Button>
               )}
@@ -148,7 +150,7 @@ async function CharacterDetails({ characterId }: { characterId: string }) {
       <Card>
         <CardContent className="p-6">
           <p className="text-muted-foreground">
-            Failed to load character details. Please try again later.
+            {translateApiContent('failedToLoad', locale)} character {translateApiContent('detailsText', locale)}
           </p>
         </CardContent>
       </Card>
@@ -196,6 +198,10 @@ function CharacterDetailsSkeleton() {
 
 export default async function CharacterPage({ params }: CharacterPageProps) {
   const { id } = await params
+  
+  // Get locale from middleware header
+  const headersList = await headers()
+  const locale = headersList.get('x-locale') || 'en'
 
   return (
     <div className="min-h-screen bg-background">
@@ -205,12 +211,12 @@ export default async function CharacterPage({ params }: CharacterPageProps) {
         <Button asChild variant="outline">
           <Link href="/characters" className="flex items-center gap-2">
             <ArrowLeft size={16} />
-            Back to Characters
+            {translateApiContent('backTo', locale)} {translateApiContent('characters', locale)}
           </Link>
         </Button>
 
         <Suspense fallback={<CharacterDetailsSkeleton />}>
-          <CharacterDetails characterId={id} />
+          <CharacterDetails characterId={id} locale={locale} />
         </Suspense>
       </main>
     </div>

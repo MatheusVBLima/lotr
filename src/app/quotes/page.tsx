@@ -4,12 +4,37 @@ import { apiClient } from "@/lib/api"
 import { enrichQuotes } from "@/lib/quote-enricher"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
+import { headers } from 'next/headers'
 
 // Use dynamic rendering only when needed
 export const dynamic = 'auto'
 export const revalidate = 3600 // Revalidate every hour
 
 export default async function QuotesPage() {
+  // Get locale from middleware header
+  const headersList = await headers()
+  const locale = headersList.get('x-locale') || 'en'
+  
+  console.log(`💬 [QUOTES PAGE] Rendering with locale: ${locale}`);
+  
+  // Load messages manually
+  let messages = {};
+  try {
+    messages = (await import(`../../../messages/${locale}.json`)).default;
+  } catch (error) {
+    messages = (await import(`../../../messages/en.json`)).default;
+  }
+  
+  // Simple translation function
+  const t = (key: string) => {
+    const keys = key.split('.');
+    let value = messages;
+    for (const k of keys) {
+      value = value?.[k];
+    }
+    return value || key;
+  };
+
   try {
     const quotesData = await apiClient.getQuotes({}, { limit: 20, page: 1 })
     const enrichedQuotes = await enrichQuotes(quotesData.docs)
@@ -25,14 +50,14 @@ export default async function QuotesPage() {
 
         <main className="container mx-auto px-4 py-8 space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">All Quotes</h2>
+            <h2 className="text-3xl font-bold tracking-tight">{t('quotes.title')}</h2>
             <p className="text-lg text-muted-foreground">
-              Discover the most memorable lines from Middle-earth
+              {t('quotes.subtitle')}
             </p>
           </div>
 
           <Suspense fallback={<QuotesListSkeleton />}>
-            <QuotesListHydrated initialData={initialQuotes} />
+            <QuotesListHydrated initialData={initialQuotes} locale={locale} />
           </Suspense>
         </main>
       </div>
@@ -44,16 +69,16 @@ export default async function QuotesPage() {
         <ModernHeader />
         <main className="container mx-auto px-4 py-8 space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">All Quotes</h2>
+            <h2 className="text-3xl font-bold tracking-tight">{t('quotes.title')}</h2>
             <p className="text-lg text-muted-foreground">
-              Discover the most memorable lines from Middle-earth
+              {t('quotes.subtitle')}
             </p>
             <p className="text-sm text-red-500 mt-4">
               Error loading quotes. Please try again later.
             </p>
           </div>
           <Suspense fallback={<QuotesListSkeleton />}>
-            <QuotesListHydrated initialData={{ docs: [], total: 0, limit: 20, page: 1, pages: 0 }} />
+            <QuotesListHydrated initialData={{ docs: [], total: 0, limit: 20, page: 1, pages: 0 }} locale={locale} />
           </Suspense>
         </main>
       </div>

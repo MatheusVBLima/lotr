@@ -12,12 +12,14 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Search, Quote } from "lucide-react"
 import type { Quote as QuoteType, ApiResponse } from "@/lib/types"
 import type { EnrichedQuote } from "@/lib/quote-enricher"
+import { translateApiContent } from "@/lib/api-translations"
 
 interface QuotesListHydratedProps {
   initialData: ApiResponse<QuoteType>
+  locale?: string
 }
 
-export function QuotesListHydrated({ initialData }: QuotesListHydratedProps) {
+export function QuotesListHydrated({ initialData, locale = 'en' }: QuotesListHydratedProps) {
   const queryClient = useQueryClient()
   const [search, setSearch] = useQueryState('search')
   const [page, setPage] = useQueryState('page', { parse: parseInt })
@@ -79,17 +81,17 @@ export function QuotesListHydrated({ initialData }: QuotesListHydratedProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Search size={20} />
-            Search Quotes
+            {translateApiContent('searchQuotes', locale)}
           </CardTitle>
           <CardDescription>
-            Find memorable quotes from The Lord of the Rings trilogy
+            {translateApiContent('searchQuotesDescription', locale)}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
             <Input
-              placeholder="Search quotes by text..."
+              placeholder={translateApiContent('searchByText', locale)}
               value={search || ''}
               onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-10"
@@ -105,8 +107,8 @@ export function QuotesListHydrated({ initialData }: QuotesListHydratedProps) {
         <>
           {data && (
             <div className="text-center text-muted-foreground">
-              Found {data.total} quotes
-              {search && ' matching your search'}
+              {translateApiContent('foundQuotes', locale)} {data.total} {translateApiContent('quotes', locale)}
+              {search && ` ${translateApiContent('matchingSearch', locale)}`}
             </div>
           )}
           
@@ -133,14 +135,14 @@ export function QuotesListHydrated({ initialData }: QuotesListHydratedProps) {
                       </Avatar>
                       <div>
                         <p className="font-medium text-sm">
-                          {quote.characterName || 'Unknown Character'}
+                          {quote.characterName || translateApiContent('unknownCharacter', locale)}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {quote.movieName || 'Unknown Movie'}
+                          {quote.movieName || translateApiContent('unknownMovie', locale)}
                         </p>
                       </div>
                     </div>
-                    <Badge variant="outline">Quote</Badge>
+                    <Badge variant="outline">{translateApiContent('quote', locale)}</Badge>
                   </div>
                 </CardContent>
               </Card>
@@ -158,7 +160,7 @@ export function QuotesListHydrated({ initialData }: QuotesListHydratedProps) {
                 }}
                 disabled={(page || 1) <= 1}
               >
-                Previous
+                {translateApiContent('previous', locale)}
               </Button>
               
               <div className="flex items-center gap-2">
@@ -185,7 +187,7 @@ export function QuotesListHydrated({ initialData }: QuotesListHydratedProps) {
                 }}
                 disabled={(page || 1) >= (data.pages || 1)}
               >
-                Next
+                {translateApiContent('next', locale)}
               </Button>
             </div>
           )}

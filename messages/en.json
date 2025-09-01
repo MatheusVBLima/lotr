@@ -1,0 +1,68 @@
+{
+  "navigation": {
+    "home": "Home",
+    "books": "Books",
+    "movies": "Movies", 
+    "characters": "Characters",
+    "quotes": "Quotes"
+  },
+  "home": {
+    "title": "Welcome to the Lord of the Rings Database",
+    "subtitle": "Explore the rich world of Middle-earth through books, movies, characters, and memorable quotes from J.R.R. Tolkien's legendary works.",
+    "quickLinks": "Quick Links",
+    "booksCard": {
+      "title": "Books",
+      "description": "Explore Tolkien's legendary works"
+    },
+    "moviesCard": {
+      "title": "Movies", 
+      "description": "Peter Jackson's cinematic masterpieces"
+    },
+    "charactersCard": {
+      "title": "Characters",
+      "description": "From Hobbits to Wizards"
+    },
+    "quotesCard": {
+      "title": "Quotes",
+      "description": "Memorable lines from Middle-earth"
+    }
+  },
+  "books": {
+    "title": "All Books",
+    "subtitle": "Explore J.R.R. Tolkien's legendary works that defined modern fantasy literature"
+  },
+  "movies": {
+    "title": "All Movies",
+    "subtitle": "Discover Peter Jackson's Middle-earth film saga"
+  },
+  "characters": {
+    "title": "All Characters",
+    "subtitle": "From Hobbits to Wizards, explore every character in Tolkien's universe",
+    "filters": {
+      "title": "Filters",
+      "name": "Search by name...",
+      "race": "Select race",
+      "gender": "Select gender",
+      "allRaces": "All races",
+      "allGenders": "All genders",
+      "male": "Male",
+      "female": "Female"
+    }
+  },
+  "quotes": {
+    "title": "All Quotes", 
+    "subtitle": "Discover the most memorable lines from Middle-earth",
+    "search": {
+      "title": "Search Quotes",
+      "description": "Find quotes by character name or quote text",
+      "placeholder": "Search quotes..."
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error loading content. Please try again later.",
+    "noResults": "No results found",
+    "showMore": "Show More",
+    "viewDetails": "View Details"
+  }
+}
