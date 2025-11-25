@@ -4,7 +4,7 @@ import { apiClient } from "@/lib/api"
 import { enrichQuotes } from "@/lib/quote-enricher"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
-import { getLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 
 // Use dynamic rendering only when needed
 export const dynamic = 'auto'
@@ -12,26 +12,9 @@ export const revalidate = 3600 // Revalidate every hour
 
 export default async function QuotesPage() {
   const locale = await getLocale()
-  
-  console.log(`💬 [QUOTES PAGE] Rendering with locale: ${locale}`);
-  
-  // Load messages manually
-  let messages: Record<string, any> = {};
-  try {
-    messages = (await import(`../../../messages/${locale}.json`)).default;
-  } catch (error) {
-    messages = (await import(`../../../messages/en.json`)).default;
-  }
+  const t = await getTranslations()
 
-  // Simple translation function
-  const t = (key: string): string => {
-    const keys = key.split('.');
-    let value: any = messages;
-    for (const k of keys) {
-      value = value?.[k];
-    }
-    return (typeof value === 'string' ? value : key);
-  };
+  console.log(`💬 [QUOTES PAGE] Rendering with locale: ${locale}`);
 
   try {
     const quotesData = await apiClient.getQuotes({}, { limit: 20, page: 1 })

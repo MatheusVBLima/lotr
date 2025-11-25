@@ -7,7 +7,7 @@ import { ModernHeader } from "@/components/modern-header"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { translateApiContent } from '@/lib/api-translations'
-import { getLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 
 // Pass t function as prop to use in server component
 async function BooksOverview({ locale, t }: { locale: string, t: (key: string) => string }) {
@@ -81,28 +81,9 @@ function BooksOverviewSkeleton() {
 
 export default async function Home() {
   const locale = await getLocale()
-  
-  console.log(`🏠 [HOME PAGE] Rendering home page with locale: ${locale}`);
-  
-  // Load messages manually to avoid setRequestLocale issues
-  let messages: Record<string, any> = {};
-  try {
-    messages = (await import(`../../messages/${locale}.json`)).default;
-    console.log(`🌐 [HOME PAGE] Messages loaded for locale: ${locale}`);
-  } catch (error) {
-    console.log(`⚠️ [HOME PAGE] Failed to load messages for ${locale}, using fallback`);
-    messages = (await import(`../../messages/en.json`)).default;
-  }
+  const t = await getTranslations()
 
-  // Simple translation function
-  const t = (key: string): string => {
-    const keys = key.split('.');
-    let value: any = messages;
-    for (const k of keys) {
-      value = value?.[k];
-    }
-    return (typeof value === 'string' ? value : key);
-  };
+  console.log(`🏠 [HOME PAGE] Rendering home page with locale: ${locale}`);
   return (
     <div className="min-h-screen bg-background selection:bg-primary/20 selection:text-primary">
       <ModernHeader />
