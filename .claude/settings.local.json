@@ -14,7 +14,9 @@
       "mcp__ide__getDiagnostics",
       "Bash(taskkill:*)",
       "WebFetch(domain:next-intl-docs.vercel.app)",
-      "WebFetch(domain:next-intl.dev)"
+      "WebFetch(domain:next-intl.dev)",
+      "Bash(dir)",
+      "Bash(cmd /c \"mkdir [locale] && move page.tsx [locale]\\ && move books [locale]\\ && move characters [locale]\\ && move movies [locale]\\ && move quotes [locale]\\ && move api [locale]\\ && move favicon.ico [locale]\"\")"
     ],
     "deny": [],
     "ask": []

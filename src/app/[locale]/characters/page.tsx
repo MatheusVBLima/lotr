@@ -3,7 +3,7 @@ import { CharactersListHydrated } from "@/components/characters-list-hydrated"
 import { apiClient } from "@/lib/api"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
-import { getLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 
 // Use ISR for better performance
 export const revalidate = 3600 // Revalidate every hour
@@ -11,26 +11,9 @@ export const revalidate = 3600 // Revalidate every hour
 // Server Component - fetches data directly with token
 export default async function CharactersPage() {
   const locale = await getLocale()
-  
-  console.log(`👥 [CHARACTERS PAGE] Rendering with locale: ${locale}`);
-  
-  // Load messages manually
-  let messages: Record<string, any> = {};
-  try {
-    messages = (await import(`../../../messages/${locale}.json`)).default;
-  } catch (error) {
-    messages = (await import(`../../../messages/en.json`)).default;
-  }
+  const t = await getTranslations()
 
-  // Simple translation function
-  const t = (key: string): string => {
-    const keys = key.split('.');
-    let value: any = messages;
-    for (const k of keys) {
-      value = value?.[k];
-    }
-    return (typeof value === 'string' ? value : key);
-  };
+  console.log(`👥 [CHARACTERS PAGE] Rendering with locale: ${locale}`);
   try {
     // Server-side fetch with authentication
     const initialCharacters = await apiClient.getCharacters({}, { limit: 12, page: 1 })
