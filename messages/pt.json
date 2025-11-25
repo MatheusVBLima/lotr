@@ -1,0 +1,69 @@
+{
+  "navigation": {
+    "home": "Início",
+    "books": "Livros",
+    "movies": "Filmes",
+    "characters": "Personagens", 
+    "quotes": "Citações"
+  },
+  "home": {
+    "title": "Bem-vindo ao Banco de Dados do Senhor dos Anéis",
+    "subtitle": "Explore o rico mundo da Terra-média através de livros, filmes, personagens e citações memoráveis das obras lendárias de J.R.R. Tolkien.",
+    "quickLinks": "Links Rápidos",
+    "booksCard": {
+      "title": "Livros",
+      "description": "Explore as obras lendárias de Tolkien"
+    },
+    "moviesCard": {
+      "title": "Filmes",
+      "description": "As obras-primas cinematográficas de Peter Jackson"
+    },
+    "charactersCard": {
+      "title": "Personagens", 
+      "description": "De Hobbits a Magos"
+    },
+    "quotesCard": {
+      "title": "Citações",
+      "description": "Frases memoráveis da Terra-média"
+    }
+  },
+  "books": {
+    "title": "Todos os Livros",
+    "subtitle": "Explore as obras lendárias de J.R.R. Tolkien que definiram a literatura fantástica moderna",
+    "partOfTrilogy": "Parte da trilogia O Senhor dos Anéis"
+  },
+  "movies": {
+    "title": "Todos os Filmes",
+    "subtitle": "Descubra a saga cinematográfica da Terra-média de Peter Jackson"
+  },
+  "characters": {
+    "title": "Todos os Personagens",
+    "subtitle": "De Hobbits a Magos, explore todos os personagens do universo de Tolkien",
+    "filters": {
+      "title": "Filtros",
+      "name": "Buscar por nome...",
+      "race": "Selecionar raça",
+      "gender": "Selecionar gênero", 
+      "allRaces": "Todas as raças",
+      "allGenders": "Todos os gêneros",
+      "male": "Masculino",
+      "female": "Feminino"
+    }
+  },
+  "quotes": {
+    "title": "Todas as Citações",
+    "subtitle": "Descubra as frases mais memoráveis da Terra-média",
+    "search": {
+      "title": "Buscar Citações",
+      "description": "Encontre citações por nome do personagem ou texto da citação",
+      "placeholder": "Buscar citações..."
+    }
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro ao carregar conteúdo. Tente novamente mais tarde.",
+    "noResults": "Nenhum resultado encontrado",
+    "showMore": "Mostrar Mais",
+    "viewDetails": "Ver Detalhes"
+  }
+}

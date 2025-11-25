@@ -2,11 +2,13 @@ import { apiClient } from "@/lib/api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ModernHeader } from "@/components/modern-header"
 import { BooksListCached } from "@/components/books-list-cached"
+import { getLocale } from 'next-intl/server'
 
 // Books don't need auth, can be statically generated
 export const revalidate = false // Static generation
 
 export default async function BooksPage() {
+  const locale = await getLocale()
   try {
     const initialBooks = await apiClient.getBooks({ limit: 20 })
 

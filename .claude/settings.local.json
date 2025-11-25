@@ -10,7 +10,11 @@
       "Bash(npm run dev:*)",
       "Bash(npm run lint)",
       "Bash(npm run build:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(taskkill:*)",
+      "WebFetch(domain:next-intl-docs.vercel.app)",
+      "WebFetch(domain:next-intl.dev)"
     ],
     "deny": [],
     "ask": []

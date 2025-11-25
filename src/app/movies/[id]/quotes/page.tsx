@@ -7,20 +7,24 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ArrowLeft, Film } from "lucide-react"
+import { getLocale } from 'next-intl/server'
+import { translateApiContent } from "@/lib/api-translations"
 
 interface MovieQuotesPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default async function MovieQuotesPage({ params }: MovieQuotesPageProps) {
+  const { id } = await params
+  const locale = await getLocale()
   let movie
   let initialQuotes
 
   try {
     // Fetch movie details and quotes in parallel
     const [movieData, quotesData] = await Promise.all([
-      apiClient.getMovie(params.id),
-      apiClient.getMovieQuotes(params.id, { limit: 20, page: 1 })
+      apiClient.getMovie(id),
+      apiClient.getMovieQuotes(id, { limit: 20, page: 1 })
     ])
     
     movie = movieData
@@ -60,13 +64,13 @@ export default async function MovieQuotesPage({ params }: MovieQuotesPageProps) 
           <Button asChild variant="outline" size="sm">
             <Link href="/movies" className="flex items-center gap-2">
               <ArrowLeft size={16} />
-              Back to Movies
+              {translateApiContent('backTo', locale)} {translateApiContent('movies', locale)}
             </Link>
           </Button>
           <Button asChild variant="outline" size="sm">
-            <Link href={`/movies/${params.id}`} className="flex items-center gap-2">
+            <Link href={`/movies/${id}`} className="flex items-center gap-2">
               <Film size={16} />
-              Movie Details
+              {translateApiContent('movieDetails', locale)}
             </Link>
           </Button>
         </div>
@@ -79,11 +83,11 @@ export default async function MovieQuotesPage({ params }: MovieQuotesPageProps) 
             </div>
             <CardTitle className="text-3xl">{movie.name}</CardTitle>
             <CardDescription className="text-lg">
-              All memorable quotes from this epic film
+              {translateApiContent('quotesDescription', locale)}
             </CardDescription>
             <div className="flex gap-2 justify-center mt-4">
               <Badge variant="secondary">
-                {movie.runtimeInMinutes} minutes
+                {movie.runtimeInMinutes} {translateApiContent('minutes', locale)}
               </Badge>
               <Badge variant="outline">
                 {movie.rottenTomatoesScore}% RT
@@ -94,34 +98,32 @@ export default async function MovieQuotesPage({ params }: MovieQuotesPageProps) 
 
         {/* Quotes section */}
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Movie Quotes</h2>
+          <h2 className="text-2xl font-bold">{translateApiContent('quotesTitle', locale)}</h2>
           <p className="text-muted-foreground">
             {initialQuotes.total > 0 
-              ? `Discover the most memorable lines from ${movie.name}`
-              : `The One API doesn't have quotes available for ${movie.name}`
+              ? `${translateApiContent('discoverQuotes', locale)} ${movie.name}`
+              : `${translateApiContent('noQuotesAvailable', locale)} ${movie.name}`
             }
           </p>
         </div>
 
         {initialQuotes.total > 0 ? (
-          <QuotesListHydrated initialData={initialQuotes} />
+          <QuotesListHydrated initialData={initialQuotes} locale={locale} />
         ) : (
           <Card>
             <CardContent className="p-8 text-center space-y-4">
               <div className="text-6xl">🎬</div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">No Quotes Available</h3>
+                <h3 className="text-xl font-semibold mb-2">{translateApiContent('noQuotesAvailable', locale)}</h3>
                 <p className="text-muted-foreground mb-4">
-                  The One API database only contains quotes from the three individual LOTR films:
-                  &ldquo;The Fellowship of the Ring&rdquo;, &ldquo;The Two Towers&rdquo;, and &ldquo;The Return of the King&rdquo;.
-                  Series entries and Hobbit films don&apos;t have quotes available.
+                  {translateApiContent('quotesExplanation', locale)}
                 </p>
                 <div className="flex gap-2 justify-center">
                   <Button asChild variant="outline">
-                    <Link href="/quotes">Browse All Quotes</Link>
+                    <Link href="/quotes">{translateApiContent('browseAllQuotes', locale)}</Link>
                   </Button>
                   <Button asChild>
-                    <Link href={`/movies/${params.id}`}>View Movie Details</Link>
+                    <Link href={`/movies/${id}`}>{translateApiContent('movieDetails', locale)}</Link>
                   </Button>
                 </div>
               </div>

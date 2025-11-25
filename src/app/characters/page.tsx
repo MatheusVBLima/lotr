@@ -3,12 +3,34 @@ import { CharactersListHydrated } from "@/components/characters-list-hydrated"
 import { apiClient } from "@/lib/api"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
+import { getLocale } from 'next-intl/server'
 
 // Use ISR for better performance
 export const revalidate = 3600 // Revalidate every hour
 
 // Server Component - fetches data directly with token
 export default async function CharactersPage() {
+  const locale = await getLocale()
+  
+  console.log(`👥 [CHARACTERS PAGE] Rendering with locale: ${locale}`);
+  
+  // Load messages manually
+  let messages = {};
+  try {
+    messages = (await import(`../../../messages/${locale}.json`)).default;
+  } catch (error) {
+    messages = (await import(`../../../messages/en.json`)).default;
+  }
+  
+  // Simple translation function
+  const t = (key: string) => {
+    const keys = key.split('.');
+    let value = messages;
+    for (const k of keys) {
+      value = value?.[k];
+    }
+    return value || key;
+  };
   try {
     // Server-side fetch with authentication
     const initialCharacters = await apiClient.getCharacters({}, { limit: 12, page: 1 })
@@ -19,15 +41,15 @@ export default async function CharactersPage() {
 
         <main className="container mx-auto px-4 py-8 space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">All Characters</h2>
+            <h2 className="text-3xl font-bold tracking-tight">{t('characters.title')}</h2>
             <p className="text-lg text-muted-foreground">
-              From Hobbits to Wizards, explore every character in Tolkien&apos;s universe
+              {t('characters.subtitle')}
             </p>
           </div>
 
           {/* Client Component with hydration */}
           <Suspense fallback={<CharactersListSkeleton />}>
-            <CharactersListHydrated initialData={initialCharacters} />
+            <CharactersListHydrated initialData={initialCharacters} locale={locale} />
           </Suspense>
         </main>
       </div>
@@ -39,16 +61,16 @@ export default async function CharactersPage() {
         <ModernHeader />
         <main className="container mx-auto px-4 py-8 space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">All Characters</h2>
+            <h2 className="text-3xl font-bold tracking-tight">{t('characters.title')}</h2>
             <p className="text-lg text-muted-foreground">
-              From Hobbits to Wizards, explore every character in Tolkien&apos;s universe
+              {t('characters.subtitle')}
             </p>
-            <p className="text-sm text-red-500 mt-4">
-              Error loading characters. Please try again later.
+            <p className="text-sm text-destructive mt-4">
+              {t('common.error')}
             </p>
           </div>
           <Suspense fallback={<CharactersListSkeleton />}>
-            <CharactersListHydrated initialData={{ docs: [], total: 0, limit: 12, page: 1, pages: 0 }} />
+            <CharactersListHydrated initialData={{ docs: [], total: 0, limit: 12, page: 1, pages: 0 }} locale={locale} />
           </Suspense>
         </main>
       </div>

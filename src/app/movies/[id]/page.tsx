@@ -8,12 +8,14 @@ import { ModernHeader } from "@/components/modern-header"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { getLocale } from 'next-intl/server'
+import { translateApiContent, translateMovieTitle } from "@/lib/api-translations"
 
 interface MoviePageProps {
   params: Promise<{ id: string }>
 }
 
-async function MovieDetails({ movieId }: { movieId: string }) {
+async function MovieDetails({ movieId, locale = 'en' }: { movieId: string, locale?: string }) {
   try {
     const movie = await apiClient.getMovie(movieId)
     
@@ -25,41 +27,41 @@ async function MovieDetails({ movieId }: { movieId: string }) {
       <div className="space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl">{movie.name}</CardTitle>
+            <CardTitle className="text-3xl">{translateMovieTitle(movie.name, locale)}</CardTitle>
             <CardDescription className="text-lg">
-              Runtime: {movie.runtimeInMinutes} minutes
+              {translateApiContent('runtimeLabel', locale)}: {movie.runtimeInMinutes} {translateApiContent('minutes', locale)}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex gap-2 flex-wrap">
               <Badge variant="secondary" className="text-base px-3 py-1">
-                Budget: ${movie.budgetInMillions}M
+                {translateApiContent('budgetLabel', locale)}: ${movie.budgetInMillions}M
               </Badge>
               <Badge variant="outline" className="text-base px-3 py-1">
-                Revenue: ${movie.boxOfficeRevenueInMillions}M
+                {translateApiContent('revenueLabel', locale)}: ${movie.boxOfficeRevenueInMillions}M
               </Badge>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Academy Awards</CardTitle>
+                  <CardTitle className="text-lg">{translateApiContent('academyAwardsLabel', locale)}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
                     {movie.academyAwardWins} / {movie.academyAwardNominations}
                   </div>
-                  <p className="text-muted-foreground">Wins / Nominations</p>
+                  <p className="text-muted-foreground">{translateApiContent('winsNominations', locale)}</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Rotten Tomatoes</CardTitle>
+                  <CardTitle className="text-lg">{translateApiContent('rottenTomatoesLabel', locale)}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{movie.rottenTomatoesScore}%</div>
-                  <p className="text-muted-foreground">Critics Score</p>
+                  <p className="text-muted-foreground">{translateApiContent('criticsScore', locale)}</p>
                 </CardContent>
               </Card>
             </div>
@@ -67,7 +69,7 @@ async function MovieDetails({ movieId }: { movieId: string }) {
             <div className="flex gap-4">
               <Button asChild>
                 <Link href={`/movies/${movie._id}/quotes`}>
-                  View Quotes from This Movie
+                  {translateApiContent('viewQuotesFromMovie', locale)}
                 </Link>
               </Button>
             </div>
@@ -80,7 +82,7 @@ async function MovieDetails({ movieId }: { movieId: string }) {
       <Card>
         <CardContent className="p-6">
           <p className="text-muted-foreground">
-            Failed to load movie details. Please try again later.
+            {translateApiContent('failedToLoad', locale)} movie {translateApiContent('detailsText', locale)}
           </p>
         </CardContent>
       </Card>
@@ -132,6 +134,8 @@ function MovieDetailsSkeleton() {
 
 export default async function MoviePage({ params }: MoviePageProps) {
   const { id } = await params
+  
+  const locale = await getLocale()
 
   return (
     <div className="min-h-screen bg-background">
@@ -141,12 +145,12 @@ export default async function MoviePage({ params }: MoviePageProps) {
         <Button asChild variant="outline">
           <Link href="/movies" className="flex items-center gap-2">
             <ArrowLeft size={16} />
-            Back to Movies
+            {translateApiContent('backTo', locale)} {translateApiContent('movies', locale)}
           </Link>
         </Button>
 
         <Suspense fallback={<MovieDetailsSkeleton />}>
-          <MovieDetails movieId={id} />
+          <MovieDetails movieId={id} locale={locale} />
         </Suspense>
       </main>
     </div>

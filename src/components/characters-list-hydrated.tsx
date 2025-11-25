@@ -13,12 +13,14 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import Link from "next/link"
 import { Search, Filter } from "lucide-react"
 import type { Character, ApiResponse } from "@/lib/types"
+import { translateApiContent, translateCharacterField } from "@/lib/api-translations"
 
 interface CharactersListHydratedProps {
   initialData: ApiResponse<Character>
+  locale?: string
 }
 
-export function CharactersListHydrated({ initialData }: CharactersListHydratedProps) {
+export function CharactersListHydrated({ initialData, locale = 'en' }: CharactersListHydratedProps) {
   const queryClient = useQueryClient()
   const [search, setSearch] = useQueryState('search')
   const [race, setRace] = useQueryState('race')
@@ -73,7 +75,7 @@ export function CharactersListHydrated({ initialData }: CharactersListHydratedPr
       <Card>
         <CardContent className="p-6">
           <p className="text-muted-foreground mb-4">
-            Failed to load characters. Please try again later.
+            {translateApiContent('failedToLoad', locale)} {translateApiContent('characters', locale)}. {translateApiContent('detailsText', locale)}
           </p>
           <details className="text-sm">
             <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
@@ -95,7 +97,7 @@ export function CharactersListHydrated({ initialData }: CharactersListHydratedPr
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter size={20} />
-            Search & Filter Characters
+            {translateApiContent('charactersFiltersTitle', locale)}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -103,7 +105,7 @@ export function CharactersListHydrated({ initialData }: CharactersListHydratedPr
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
               <Input
-                placeholder="Search by name..."
+                placeholder={translateApiContent('charactersFiltersName', locale)}
                 value={search || ''}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 className="pl-10"
@@ -112,28 +114,28 @@ export function CharactersListHydrated({ initialData }: CharactersListHydratedPr
             
             <Select value={race || 'all'} onValueChange={handleRaceChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Filter by race" />
+                <SelectValue placeholder={translateApiContent('filterByRace', locale)} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Races</SelectItem>
-                <SelectItem value="Hobbit">Hobbit</SelectItem>
-                <SelectItem value="Human">Human</SelectItem>
-                <SelectItem value="Elf">Elf</SelectItem>
-                <SelectItem value="Dwarf">Dwarf</SelectItem>
-                <SelectItem value="Wizard">Wizard</SelectItem>
-                <SelectItem value="Orc">Orc</SelectItem>
+                <SelectItem value="all">{translateApiContent('allRaces', locale)}</SelectItem>
+                <SelectItem value="Hobbit">{translateApiContent('Hobbit', locale)}</SelectItem>
+                <SelectItem value="Human">{translateApiContent('Human', locale)}</SelectItem>
+                <SelectItem value="Elf">{translateApiContent('Elf', locale)}</SelectItem>
+                <SelectItem value="Dwarf">{translateApiContent('Dwarf', locale)}</SelectItem>
+                <SelectItem value="Wizard">{translateApiContent('Wizard', locale)}</SelectItem>
+                <SelectItem value="Orc">{translateApiContent('Orc', locale)}</SelectItem>
                 <SelectItem value="Uruk-hai">Uruk-hai</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={gender || 'all'} onValueChange={handleGenderChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Filter by gender" />
+                <SelectValue placeholder={translateApiContent('filterByGender', locale)} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Genders</SelectItem>
-                <SelectItem value="Male">Male</SelectItem>
-                <SelectItem value="Female">Female</SelectItem>
+                <SelectItem value="all">{translateApiContent('allGenders', locale)}</SelectItem>
+                <SelectItem value="Male">{translateApiContent('Male', locale)}</SelectItem>
+                <SelectItem value="Female">{translateApiContent('Female', locale)}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -147,8 +149,8 @@ export function CharactersListHydrated({ initialData }: CharactersListHydratedPr
         <>
           {data && (
             <div className="text-center text-muted-foreground">
-              Found {data.total} characters
-              {(search || race || gender) && ' matching your filters'}
+              {translateApiContent('foundCharacters', locale)} {data.total} {translateApiContent('characters', locale)}
+              {(search || race || gender) && ` ${translateApiContent('matchingFilters', locale)}`}
             </div>
           )}
           
@@ -163,34 +165,34 @@ export function CharactersListHydrated({ initialData }: CharactersListHydratedPr
                   </Avatar>
                   <CardTitle className="text-lg">{character.name}</CardTitle>
                   {character.race && (
-                    <CardDescription>{character.race}</CardDescription>
+                    <CardDescription>{translateApiContent(character.race, locale)}</CardDescription>
                   )}
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex gap-2 flex-wrap justify-center">
                     {character.race && (
-                      <Badge variant="secondary">{character.race}</Badge>
+                      <Badge variant="secondary">{translateApiContent(character.race, locale)}</Badge>
                     )}
                     {character.gender && character.gender !== 'NaN' && (
-                      <Badge variant="outline">{character.gender}</Badge>
+                      <Badge variant="outline">{translateApiContent(character.gender, locale)}</Badge>
                     )}
                   </div>
                   
                   {character.realm && (
                     <div className="text-sm text-center text-muted-foreground">
-                      <strong>Realm:</strong> {character.realm}
+                      <strong>{translateApiContent('realm', locale)}:</strong> {character.realm}
                     </div>
                   )}
 
                   <div className="flex gap-2 justify-center">
                     <Button asChild variant="outline" size="sm">
                       <Link href={`/characters/${character._id}`}>
-                        View Details
+                        {translateApiContent('viewDetails', locale)}
                       </Link>
                     </Button>
                     <Button asChild variant="outline" size="sm">
                       <Link href={`/characters/${character._id}/quotes`}>
-                        Quotes
+                        {translateApiContent('viewQuotes', locale)}
                       </Link>
                     </Button>
                   </div>
@@ -210,7 +212,7 @@ export function CharactersListHydrated({ initialData }: CharactersListHydratedPr
                 }}
                 disabled={(page || 1) <= 1}
               >
-                Previous
+                {translateApiContent('previous', locale)}
               </Button>
               
               <div className="flex items-center gap-2">
@@ -237,7 +239,7 @@ export function CharactersListHydrated({ initialData }: CharactersListHydratedPr
                 }}
                 disabled={(page || 1) >= (data.pages || 1)}
               >
-                Next
+                {translateApiContent('next', locale)}
               </Button>
             </div>
           )}

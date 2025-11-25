@@ -8,12 +8,14 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import type { Movie, ApiResponse } from "@/lib/types"
+import { translateApiContent, translateMovieTitle } from "@/lib/api-translations"
 
 interface MoviesListCachedProps {
   initialData?: ApiResponse<Movie>
+  locale?: string
 }
 
-export function MoviesListCached({ initialData }: MoviesListCachedProps) {
+export function MoviesListCached({ initialData, locale = 'en' }: MoviesListCachedProps) {
   console.log('MoviesListCached received initialData:', !!initialData, initialData?.docs?.length)
   
   const { data, isLoading, error } = useQuery({
@@ -60,28 +62,28 @@ export function MoviesListCached({ initialData }: MoviesListCachedProps) {
       {movies.map((movie: Movie) => (
         <Card key={movie._id} className="hover:shadow-lg transition-shadow">
           <CardHeader>
-            <CardTitle className="text-xl">{movie.name}</CardTitle>
+            <CardTitle className="text-xl">{translateMovieTitle(movie.name, locale)}</CardTitle>
             <CardDescription>
-              {movie.runtimeInMinutes} minutes
+              {movie.runtimeInMinutes} {translateApiContent('minutes', locale)}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex gap-2 flex-wrap">
               <Badge variant="secondary">
-                ${movie.budgetInMillions}M budget
+                ${movie.budgetInMillions}M {translateApiContent('budgetField', locale)}
               </Badge>
               <Badge variant="outline">
-                ${movie.boxOfficeRevenueInMillions}M revenue
+                ${movie.boxOfficeRevenueInMillions}M {translateApiContent('boxOfficeField', locale)}
               </Badge>
             </div>
             
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Academy Awards:</span>
+                <span>{translateApiContent('awardsField', locale)}:</span>
                 <span>{movie.academyAwardWins}/{movie.academyAwardNominations}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>Rotten Tomatoes:</span>
+                <span>{translateApiContent('rottenTomatoesField', locale)}:</span>
                 <span>{movie.rottenTomatoesScore}%</span>
               </div>
             </div>
@@ -89,12 +91,12 @@ export function MoviesListCached({ initialData }: MoviesListCachedProps) {
             <div className="flex gap-2">
               <Button asChild variant="outline" size="sm">
                 <Link href={`/movies/${movie._id}`}>
-                  View Details
+                  {translateApiContent('viewDetails', locale)}
                 </Link>
               </Button>
               <Button asChild variant="outline" size="sm">
                 <Link href={`/movies/${movie._id}/quotes`}>
-                  Quotes
+                  {translateApiContent('viewQuotes', locale)}
                 </Link>
               </Button>
             </div>
