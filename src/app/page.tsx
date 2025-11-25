@@ -85,7 +85,7 @@ export default async function Home() {
   console.log(`🏠 [HOME PAGE] Rendering home page with locale: ${locale}`);
   
   // Load messages manually to avoid setRequestLocale issues
-  let messages = {};
+  let messages: Record<string, any> = {};
   try {
     messages = (await import(`../../messages/${locale}.json`)).default;
     console.log(`🌐 [HOME PAGE] Messages loaded for locale: ${locale}`);
@@ -93,15 +93,15 @@ export default async function Home() {
     console.log(`⚠️ [HOME PAGE] Failed to load messages for ${locale}, using fallback`);
     messages = (await import(`../../messages/en.json`)).default;
   }
-  
+
   // Simple translation function
-  const t = (key: string) => {
+  const t = (key: string): string => {
     const keys = key.split('.');
-    let value = messages;
+    let value: any = messages;
     for (const k of keys) {
       value = value?.[k];
     }
-    return value || key;
+    return (typeof value === 'string' ? value : key);
   };
   return (
     <div className="min-h-screen bg-background selection:bg-primary/20 selection:text-primary">

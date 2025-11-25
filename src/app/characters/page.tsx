@@ -15,21 +15,21 @@ export default async function CharactersPage() {
   console.log(`👥 [CHARACTERS PAGE] Rendering with locale: ${locale}`);
   
   // Load messages manually
-  let messages = {};
+  let messages: Record<string, any> = {};
   try {
     messages = (await import(`../../../messages/${locale}.json`)).default;
   } catch (error) {
     messages = (await import(`../../../messages/en.json`)).default;
   }
-  
+
   // Simple translation function
-  const t = (key: string) => {
+  const t = (key: string): string => {
     const keys = key.split('.');
-    let value = messages;
+    let value: any = messages;
     for (const k of keys) {
       value = value?.[k];
     }
-    return value || key;
+    return (typeof value === 'string' ? value : key);
   };
   try {
     // Server-side fetch with authentication
