@@ -29,7 +29,8 @@
   },
   "books": {
     "title": "Todos os Livros",
-    "subtitle": "Explore as obras lendárias de J.R.R. Tolkien que definiram a literatura fantástica moderna"
+    "subtitle": "Explore as obras lendárias de J.R.R. Tolkien que definiram a literatura fantástica moderna",
+    "partOfTrilogy": "Parte da trilogia O Senhor dos Anéis"
   },
   "movies": {
     "title": "Todos os Filmes",

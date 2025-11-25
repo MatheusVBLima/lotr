@@ -75,7 +75,7 @@ export function CharactersListHydrated({ initialData, locale = 'en' }: Character
       <Card>
         <CardContent className="p-6">
           <p className="text-muted-foreground mb-4">
-            Failed to load characters. Please try again later.
+            {translateApiContent('failedToLoad', locale)} {translateApiContent('characters', locale)}. {translateApiContent('detailsText', locale)}
           </p>
           <details className="text-sm">
             <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
@@ -97,7 +97,7 @@ export function CharactersListHydrated({ initialData, locale = 'en' }: Character
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter size={20} />
-            Search & Filter Characters
+            {translateApiContent('charactersFiltersTitle', locale)}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -105,7 +105,7 @@ export function CharactersListHydrated({ initialData, locale = 'en' }: Character
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
               <Input
-                placeholder="Search by name..."
+                placeholder={translateApiContent('charactersFiltersName', locale)}
                 value={search || ''}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 className="pl-10"
@@ -149,8 +149,8 @@ export function CharactersListHydrated({ initialData, locale = 'en' }: Character
         <>
           {data && (
             <div className="text-center text-muted-foreground">
-              Found {data.total} characters
-              {(search || race || gender) && ' matching your filters'}
+              {translateApiContent('foundCharacters', locale)} {data.total} {translateApiContent('characters', locale)}
+              {(search || race || gender) && ` ${translateApiContent('matchingFilters', locale)}`}
             </div>
           )}
           
@@ -165,7 +165,7 @@ export function CharactersListHydrated({ initialData, locale = 'en' }: Character
                   </Avatar>
                   <CardTitle className="text-lg">{character.name}</CardTitle>
                   {character.race && (
-                    <CardDescription>{character.race}</CardDescription>
+                    <CardDescription>{translateApiContent(character.race, locale)}</CardDescription>
                   )}
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -212,7 +212,7 @@ export function CharactersListHydrated({ initialData, locale = 'en' }: Character
                 }}
                 disabled={(page || 1) <= 1}
               >
-                Previous
+                {translateApiContent('previous', locale)}
               </Button>
               
               <div className="flex items-center gap-2">
@@ -239,7 +239,7 @@ export function CharactersListHydrated({ initialData, locale = 'en' }: Character
                 }}
                 disabled={(page || 1) >= (data.pages || 1)}
               >
-                Next
+                {translateApiContent('next', locale)}
               </Button>
             </div>
           )}

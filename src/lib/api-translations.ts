@@ -17,11 +17,11 @@ export const apiTranslations = {
     hair: 'Hair',
     
     // Movie fields
-    runtime: 'Runtime',
-    budget: 'Budget',
-    boxOffice: 'Box Office',
-    awards: 'Academy Awards',
-    rottenTomatoes: 'Rotten Tomatoes',
+    runtimeField: 'Runtime',
+    budgetField: 'Budget',
+    boxOfficeField: 'Box Office',
+    awardsField: 'Academy Awards',
+    rottenTomatoesField: 'Rotten Tomatoes',
     
     // Common actions
     viewDetails: 'View Details',
@@ -29,6 +29,18 @@ export const apiTranslations = {
     viewChapters: 'View Chapters',
     
     // Quotes page
+    quotesTitle: 'All Quotes',
+    quotesSubtitle: 'Discover the most memorable lines from Middle-earth',
+    movieDetails: 'Movie Details',
+    characterDetails: 'Character Details',
+    quotesDescription: 'All memorable quotes from this epic film',
+    discoverQuotes: 'Discover the most memorable lines from',
+    noQuotesAvailable: 'No Quotes Available',
+    quotesExplanation: 'The One API database only contains quotes from the three individual LOTR films: "The Fellowship of the Ring", "The Two Towers", and "The Return of the King". Series entries and Hobbit films don\'t have quotes available.',
+    browseAllQuotes: 'Browse All Quotes',
+    characterQuotes: 'Character Quotes',
+    noQuotesFound: 'No quotes found for',
+    characterNoQuotes: 'This character doesn\'t have any recorded quotes in The One API database, or they may be from scenes not included in the dataset.',
     searchQuotes: 'Search Quotes',
     searchQuotesDescription: 'Find memorable quotes from The Lord of the Rings trilogy',
     searchByText: 'Search quotes by text...',
@@ -46,11 +58,11 @@ export const apiTranslations = {
     movies: 'Movies',
     characters: 'Characters',
     books: 'Books',
-    runtime: 'Runtime',
-    budget: 'Budget',
-    revenue: 'Revenue',
-    academyAwards: 'Academy Awards',
-    rottenTomatoes: 'Rotten Tomatoes',
+    runtimeLabel: 'Runtime',
+    budgetLabel: 'Budget',
+    revenueLabel: 'Revenue',
+    academyAwardsLabel: 'Academy Awards',
+    rottenTomatoesLabel: 'Rotten Tomatoes',
     winsNominations: 'Wins / Nominations',
     criticsScore: 'Critics Score',
     viewQuotesFromMovie: 'View Quotes from This Movie',
@@ -68,6 +80,10 @@ export const apiTranslations = {
     filterByGender: 'Filter by gender',
     allRaces: 'All Races',
     allGenders: 'All Genders',
+    charactersFiltersTitle: 'Search & Filter Characters',
+    charactersFiltersName: 'Search by name...',
+    foundCharacters: 'Found',
+    matchingFilters: 'matching your filters',
     
     // Races
     Hobbit: 'Hobbit',
@@ -89,7 +105,11 @@ export const apiTranslations = {
     'The Hobbit Series': 'The Hobbit Series',
     'An Unexpected Journey': 'An Unexpected Journey',
     'The Desolation of Smaug': 'The Desolation of Smaug',
-    'The Battle of the Five Armies': 'The Battle of the Five Armies'
+    'The Battle of the Five Armies': 'The Battle of the Five Armies',
+    
+    // Book titles (English)
+    'The Fellowship Of The Ring': 'The Fellowship of the Ring',
+    'The Return Of The King': 'The Return of the King'
   },
   pt: {
     // Gender values
@@ -108,11 +128,11 @@ export const apiTranslations = {
     hair: 'Cabelo',
     
     // Movie fields
-    runtime: 'Duração',
-    budget: 'Orçamento',
-    boxOffice: 'Bilheteria',
-    awards: 'Prêmios Oscar',
-    rottenTomatoes: 'Rotten Tomatoes',
+    runtimeField: 'Duração',
+    budgetField: 'Orçamento',
+    boxOfficeField: 'Bilheteria',
+    awardsField: 'Prêmios Oscar',
+    rottenTomatoesField: 'Rotten Tomatoes',
     
     // Common actions
     viewDetails: 'Ver Detalhes',
@@ -120,6 +140,18 @@ export const apiTranslations = {
     viewChapters: 'Ver Capítulos',
     
     // Quotes page
+    quotesTitle: 'Todas as Citações',
+    quotesSubtitle: 'Descubra as frases mais memoráveis da Terra-média',
+    movieDetails: 'Detalhes do Filme',
+    characterDetails: 'Detalhes do Personagem',
+    quotesDescription: 'Todas as citações memoráveis deste filme épico',
+    discoverQuotes: 'Descubra as frases mais memoráveis de',
+    noQuotesAvailable: 'Nenhuma Citação Disponível',
+    quotesExplanation: 'O banco de dados da One API contém apenas citações dos três filmes individuais de O Senhor dos Anéis: "A Sociedade do Anel", "As Duas Torres" e "O Retorno do Rei". Entradas de séries e filmes do Hobbit não têm citações disponíveis.',
+    browseAllQuotes: 'Ver Todas as Citações',
+    characterQuotes: 'Citações do Personagem',
+    noQuotesFound: 'Nenhuma citação encontrada para',
+    characterNoQuotes: 'Este personagem não tem citações registradas no banco de dados da One API, ou podem ser de cenas não incluídas no conjunto de dados.',
     searchQuotes: 'Pesquisar Citações',
     searchQuotesDescription: 'Encontre citações memoráveis da trilogia O Senhor dos Anéis',
     searchByText: 'Pesquisar citações por texto...',
@@ -137,11 +169,11 @@ export const apiTranslations = {
     movies: 'Filmes',
     characters: 'Personagens',
     books: 'Livros',
-    runtime: 'Duração',
-    budget: 'Orçamento',
-    revenue: 'Receita',
-    academyAwards: 'Prêmios Oscar',
-    rottenTomatoes: 'Rotten Tomatoes',
+    runtimeLabel: 'Duração',
+    budgetLabel: 'Orçamento',
+    revenueLabel: 'Receita',
+    academyAwardsLabel: 'Prêmios Oscar',
+    rottenTomatoesLabel: 'Rotten Tomatoes',
     winsNominations: 'Vitórias / Indicações',
     criticsScore: 'Nota dos Críticos',
     viewQuotesFromMovie: 'Ver Citações deste Filme',
@@ -159,6 +191,10 @@ export const apiTranslations = {
     filterByGender: 'Filtrar por gênero',
     allRaces: 'Todas as Raças',
     allGenders: 'Todos os Gêneros',
+    charactersFiltersTitle: 'Pesquisar e Filtrar Personagens',
+    charactersFiltersName: 'Buscar por nome...',
+    foundCharacters: 'Encontrados',
+    matchingFilters: 'correspondendo aos seus filtros',
     
     // Races
     Hobbit: 'Hobbit',
@@ -180,7 +216,11 @@ export const apiTranslations = {
     'The Hobbit Series': 'Série O Hobbit',
     'An Unexpected Journey': 'Uma Jornada Inesperada',
     'The Desolation of Smaug': 'A Desolação de Smaug',
-    'The Battle of the Five Armies': 'A Batalha dos Cinco Exércitos'
+    'The Battle of the Five Armies': 'A Batalha dos Cinco Exércitos',
+    
+    // Book titles (Portuguese)
+    'The Fellowship Of The Ring': 'A Sociedade do Anel',
+    'The Return Of The King': 'O Retorno do Rei'
   }
 } as const
 

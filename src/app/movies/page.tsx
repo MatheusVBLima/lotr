@@ -1,15 +1,13 @@
 import { apiClient } from "@/lib/api"
 import { ModernHeader } from "@/components/modern-header"
 import { MoviesListCached } from "@/components/movies-list-cached"
-import { headers } from 'next/headers'
+import { getLocale } from 'next-intl/server'
 
 // Use ISR for better performance  
 export const revalidate = 3600 // Revalidate every hour
 
 export default async function MoviesPage() {
-  // Get locale from middleware header
-  const headersList = await headers()
-  const locale = headersList.get('x-locale') || 'en'
+  const locale = await getLocale()
   
   console.log(`🎬 [MOVIES PAGE] Rendering with locale: ${locale}`);
   

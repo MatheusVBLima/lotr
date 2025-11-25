@@ -3,16 +3,14 @@ import { CharactersListHydrated } from "@/components/characters-list-hydrated"
 import { apiClient } from "@/lib/api"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
-import { headers } from 'next/headers'
+import { getLocale } from 'next-intl/server'
 
 // Use ISR for better performance
 export const revalidate = 3600 // Revalidate every hour
 
 // Server Component - fetches data directly with token
 export default async function CharactersPage() {
-  // Get locale from middleware header
-  const headersList = await headers()
-  const locale = headersList.get('x-locale') || 'en'
+  const locale = await getLocale()
   
   console.log(`👥 [CHARACTERS PAGE] Rendering with locale: ${locale}`);
   
@@ -63,16 +61,16 @@ export default async function CharactersPage() {
         <ModernHeader />
         <main className="container mx-auto px-4 py-8 space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">All Characters</h2>
+            <h2 className="text-3xl font-bold tracking-tight">{t('characters.title')}</h2>
             <p className="text-lg text-muted-foreground">
-              From Hobbits to Wizards, explore every character in Tolkien&apos;s universe
+              {t('characters.subtitle')}
             </p>
-            <p className="text-sm text-red-500 mt-4">
-              Error loading characters. Please try again later.
+            <p className="text-sm text-destructive mt-4">
+              {t('common.error')}
             </p>
           </div>
           <Suspense fallback={<CharactersListSkeleton />}>
-            <CharactersListHydrated initialData={{ docs: [], total: 0, limit: 12, page: 1, pages: 0 }} />
+            <CharactersListHydrated initialData={{ docs: [], total: 0, limit: 12, page: 1, pages: 0 }} locale={locale} />
           </Suspense>
         </main>
       </div>

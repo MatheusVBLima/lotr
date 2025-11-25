@@ -8,17 +8,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useLocale } from 'next-intl'
-import { useRouter, usePathname } from 'next/navigation'
+import { cn } from "@/lib/utils"
+import { Globe, ChevronDown } from "lucide-react"
 
 const locales = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'pt', name: 'Português', flag: '🇧🇷' }
+  { code: 'en', name: 'English', label: 'EN' },
+  { code: 'pt', name: 'Português', label: 'PT' }
 ] as const
 
 export function LanguageSwitcher() {
   const locale = useLocale()
-  const router = useRouter()
-  const pathname = usePathname()
 
   const handleLocaleChange = (newLocale: string) => {
     console.log(`🌐 [LANGUAGE SWITCHER] Changing locale from ${locale} to ${newLocale}`)
@@ -26,8 +25,10 @@ export function LanguageSwitcher() {
     // Set the locale cookie
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000` // 1 year
     
-    // Refresh the current page to load with new locale
-    router.refresh()
+    // Reload the page to ensure the cookie is sent with the request
+    // Using window.location.reload() instead of router.refresh() to avoid race conditions
+    // where the cookie might not be transmitted before the server processes the request
+    window.location.reload()
   }
 
   const currentLocale = locales.find(l => l.code === locale) || locales[0]
@@ -35,19 +36,30 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
-          <span className="text-lg">{currentLocale.flag}</span>
-          <span className="hidden sm:inline">{currentLocale.name}</span>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="h-9 gap-2 px-3 border-primary/20 bg-background/50 hover:bg-primary/10 hover:text-primary hover:border-primary/40 transition-all shadow-sm group"
+        >
+          <Globe className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+          <div className="h-4 w-px bg-border mx-1" />
+          <span className="font-medium text-sm min-w-[2ch]">{currentLocale.label}</span>
+          <ChevronDown className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity ml-1" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="bg-background/95 backdrop-blur-sm border-primary/20 min-w-[140px] animate-in fade-in-0 zoom-in-95">
         {locales.map((loc) => (
           <DropdownMenuItem
             key={loc.code}
             onClick={() => handleLocaleChange(loc.code)}
-            className="gap-2 cursor-pointer"
+            className={cn(
+              "gap-3 cursor-pointer py-2.5 focus:bg-primary/10 focus:text-primary transition-colors",
+              locale === loc.code && "bg-primary/5 text-primary font-medium"
+            )}
           >
-            <span className="text-lg">{loc.flag}</span>
+            <span className="uppercase text-xs font-bold text-muted-foreground w-6 text-center border border-border rounded px-1 py-0.5 bg-muted/50">
+              {loc.label}
+            </span>
             <span>{loc.name}</span>
           </DropdownMenuItem>
         ))}

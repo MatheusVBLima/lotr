@@ -70,20 +70,20 @@ export function MoviesListCached({ initialData, locale = 'en' }: MoviesListCache
           <CardContent className="space-y-4">
             <div className="flex gap-2 flex-wrap">
               <Badge variant="secondary">
-                ${movie.budgetInMillions}M {translateApiContent('budget', locale)}
+                ${movie.budgetInMillions}M {translateApiContent('budgetField', locale)}
               </Badge>
               <Badge variant="outline">
-                ${movie.boxOfficeRevenueInMillions}M {translateApiContent('boxOffice', locale)}
+                ${movie.boxOfficeRevenueInMillions}M {translateApiContent('boxOfficeField', locale)}
               </Badge>
             </div>
             
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>{translateApiContent('awards', locale)}:</span>
+                <span>{translateApiContent('awardsField', locale)}:</span>
                 <span>{movie.academyAwardWins}/{movie.academyAwardNominations}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>{translateApiContent('rottenTomatoes', locale)}:</span>
+                <span>{translateApiContent('rottenTomatoesField', locale)}:</span>
                 <span>{movie.rottenTomatoesScore}%</span>
               </div>
             </div>

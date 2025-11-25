@@ -8,7 +8,7 @@ import { ModernHeader } from "@/components/modern-header"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
-import { headers } from 'next/headers'
+import { getLocale } from 'next-intl/server'
 import { translateApiContent, translateMovieTitle } from "@/lib/api-translations"
 
 interface MoviePageProps {
@@ -29,23 +29,23 @@ async function MovieDetails({ movieId, locale = 'en' }: { movieId: string, local
           <CardHeader>
             <CardTitle className="text-3xl">{translateMovieTitle(movie.name, locale)}</CardTitle>
             <CardDescription className="text-lg">
-              {translateApiContent('runtime', locale)}: {movie.runtimeInMinutes} {translateApiContent('minutes', locale)}
+              {translateApiContent('runtimeLabel', locale)}: {movie.runtimeInMinutes} {translateApiContent('minutes', locale)}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex gap-2 flex-wrap">
               <Badge variant="secondary" className="text-base px-3 py-1">
-                {translateApiContent('budget', locale)}: ${movie.budgetInMillions}M
+                {translateApiContent('budgetLabel', locale)}: ${movie.budgetInMillions}M
               </Badge>
               <Badge variant="outline" className="text-base px-3 py-1">
-                {translateApiContent('revenue', locale)}: ${movie.boxOfficeRevenueInMillions}M
+                {translateApiContent('revenueLabel', locale)}: ${movie.boxOfficeRevenueInMillions}M
               </Badge>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">{translateApiContent('academyAwards', locale)}</CardTitle>
+                  <CardTitle className="text-lg">{translateApiContent('academyAwardsLabel', locale)}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
@@ -57,7 +57,7 @@ async function MovieDetails({ movieId, locale = 'en' }: { movieId: string, local
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">{translateApiContent('rottenTomatoes', locale)}</CardTitle>
+                  <CardTitle className="text-lg">{translateApiContent('rottenTomatoesLabel', locale)}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{movie.rottenTomatoesScore}%</div>
@@ -135,9 +135,7 @@ function MovieDetailsSkeleton() {
 export default async function MoviePage({ params }: MoviePageProps) {
   const { id } = await params
   
-  // Get locale from middleware header
-  const headersList = await headers()
-  const locale = headersList.get('x-locale') || 'en'
+  const locale = await getLocale()
 
   return (
     <div className="min-h-screen bg-background">

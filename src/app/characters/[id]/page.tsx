@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import Link from "next/link"
 import { ArrowLeft, ExternalLink } from "lucide-react"
-import { headers } from 'next/headers'
+import { getLocale } from 'next-intl/server'
 import { translateApiContent } from "@/lib/api-translations"
 
 interface CharacterPageProps {
@@ -199,9 +199,7 @@ function CharacterDetailsSkeleton() {
 export default async function CharacterPage({ params }: CharacterPageProps) {
   const { id } = await params
   
-  // Get locale from middleware header
-  const headersList = await headers()
-  const locale = headersList.get('x-locale') || 'en'
+  const locale = await getLocale()
 
   return (
     <div className="min-h-screen bg-background">

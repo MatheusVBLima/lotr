@@ -29,7 +29,8 @@
   },
   "books": {
     "title": "All Books",
-    "subtitle": "Explore J.R.R. Tolkien's legendary works that defined modern fantasy literature"
+    "subtitle": "Explore J.R.R. Tolkien's legendary works that defined modern fantasy literature",
+    "partOfTrilogy": "Part of The Lord of the Rings trilogy"
   },
   "movies": {
     "title": "All Movies",

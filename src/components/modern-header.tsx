@@ -4,10 +4,16 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Crown } from "lucide-react"
+import { Crown, Menu } from "lucide-react"
 import { ThemeSwitcher } from "@/components/theme-switcher"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useTranslations, useLocale } from 'next-intl'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 
 export function ModernHeader() {
@@ -31,63 +37,75 @@ export function ModernHeader() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo and Brand */}
           <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg">
-              <Crown className="h-6 w-6 text-white" />
+            <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-lg shadow-md ring-1 ring-primary/20">
+              <Crown className="h-6 w-6 text-primary-foreground" />
             </div>
             <div className="hidden sm:block">
               <Link href="/" className="flex flex-col">
-                <span className="font-bold text-lg leading-none">Middle-earth</span>
-                <span className="text-xs text-muted-foreground leading-none">Database</span>
+                <span className="font-serif font-bold text-lg leading-none tracking-wide">Middle-earth</span>
+                <span className="text-xs text-muted-foreground leading-none font-sans uppercase tracking-wider mt-0.5">Database</span>
               </Link>
             </div>
             <div className="sm:hidden">
-              <Link href="/" className="font-bold text-lg">
+              <Link href="/" className="font-serif font-bold text-lg tracking-wide">
                 Middle-earth
               </Link>
             </div>
           </div>
 
-          {/* Navigation */}
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-1">
+            {navigation.map((item) => (
+              <Button
+                key={item.href}
+                asChild
+                variant={pathname === item.href ? "default" : "ghost"}
+                size="sm"
+                className={cn(
+                  pathname === item.href && "bg-primary text-primary-foreground"
+                )}
+              >
+                <Link href={item.href}>
+                  {item.name}
+                </Link>
+              </Button>
+            ))}
+          </nav>
+
+          {/* Right Actions: Lang, Theme, Mobile Menu */}
           <div className="flex items-center space-x-2">
-            <nav className="flex items-center space-x-1">
-              {navigation.map((item) => (
-                <Button
-                  key={item.name}
-                  asChild
-                  variant={pathname === item.href ? "default" : "ghost"}
-                  size="sm"
-                  className={cn(
-                    "hidden md:flex",
-                    pathname === item.href && "bg-primary text-primary-foreground"
-                  )}
-                >
-                  <Link href={item.href}>
-                    {item.name}
-                  </Link>
-                </Button>
-              ))}
-              
-              {/* Mobile Navigation */}
-              <div className="md:hidden">
-                <select 
-                  value={pathname} 
-                  onChange={(e) => window.location.href = e.target.value}
-                  className="bg-transparent border border-input rounded-md px-3 py-1 text-sm"
-                >
-                  {navigation.map((item) => (
-                    <option key={item.name} value={item.href}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </nav>
-            
             {/* Language Switcher */}
             <LanguageSwitcher />
             
             {/* Theme Switcher */}
             <ThemeSwitcher />
+            
+            {/* Mobile Navigation (Only visible on small screens) */}
+            <div className="md:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Toggle menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur-sm border-border/50">
+                  {navigation.map((item) => (
+                    <DropdownMenuItem key={item.href} asChild>
+                      <Link 
+                        href={item.href}
+                        className={cn(
+                          "w-full cursor-pointer",
+                          pathname === item.href && "bg-primary/10 text-primary font-medium"
+                        )}
+                      >
+                        {item.name}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
       </div>

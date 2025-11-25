@@ -4,16 +4,14 @@ import { apiClient } from "@/lib/api"
 import { enrichQuotes } from "@/lib/quote-enricher"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
-import { headers } from 'next/headers'
+import { getLocale } from 'next-intl/server'
 
 // Use dynamic rendering only when needed
 export const dynamic = 'auto'
 export const revalidate = 3600 // Revalidate every hour
 
 export default async function QuotesPage() {
-  // Get locale from middleware header
-  const headersList = await headers()
-  const locale = headersList.get('x-locale') || 'en'
+  const locale = await getLocale()
   
   console.log(`💬 [QUOTES PAGE] Rendering with locale: ${locale}`);
   
@@ -73,8 +71,8 @@ export default async function QuotesPage() {
             <p className="text-lg text-muted-foreground">
               {t('quotes.subtitle')}
             </p>
-            <p className="text-sm text-red-500 mt-4">
-              Error loading quotes. Please try again later.
+            <p className="text-sm text-destructive mt-4">
+              {t('common.error')}
             </p>
           </div>
           <Suspense fallback={<QuotesListSkeleton />}>
